@@ -1,6 +1,7 @@
 module Main
 
 import Tree 
+import Picture
 
 total listToTree : Ord a => List a -> Tree a
 listToTree [] = Empty
@@ -31,3 +32,17 @@ maxMaybe (Just x) (Just y) = case compare x y of
                                   EQ => Just x
                                   GT => Just x
 
+total biggestTriangle : Picture -> Maybe Double
+biggestTriangle (Primitive orig@(Triangle x y)) = Just (area orig)
+biggestTriangle (Primitive _) = Nothing
+biggestTriangle (Combine pic pic1) = maxMaybe (biggestTriangle pic) (biggestTriangle pic1)
+biggestTriangle (Rotate x pic) = biggestTriangle pic
+biggestTriangle (Translate x y pic) = biggestTriangle pic
+
+testPic1 : Picture
+testPic1 = Combine (Primitive (Triangle 2 3))
+                   (Primitive (Triangle 2 4))
+
+testPic2 : Picture
+testPic2 = Combine (Primitive (Rectangle 1 3))
+                   (Primitive (Circle 4))
